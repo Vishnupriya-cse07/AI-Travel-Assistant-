@@ -76,10 +76,13 @@ while True:
     else:
         print("Chatbot: Sorry, city not found 😕")
 
-!pip install -q -U google-generativeai
 
 import google.generativeai as genai
-API_KEY = "AIzaSyCG7RF1Dc2fnOPY-ipssaD3DUb5iFO5QBY"
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=API_KEY)
 
 model = genai.GenerativeModel(
@@ -127,7 +130,11 @@ while True:
 import google.generativeai as genai
 import re
 
-API_KEY = "AIzaSyCG7RF1Dc2fnOPY-ipssaD3DUb5iFO5QBY"
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=API_KEY)
 
 model = genai.GenerativeModel(
@@ -209,7 +216,11 @@ import google.generativeai as genai
 import json
 import re
 
-API_KEY = "AIzaSyCG7RF1Dc2fnOPY-ipssaD3DUb5iFO5QBY"
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=API_KEY)
 
 model = genai.GenerativeModel(
@@ -242,33 +253,26 @@ while True:
         print("Chatbot: Happy travelling ✈️")
         break
 
-    # Normalize input for greeting detection
     clean_input = re.sub(r'[^\w\s]', '', user_input.lower()).strip()
-
-    # Greeting handling
     if clean_input in greetings:
         print("Chatbot: Hello! 😊 Please enter a city or place name.\n")
         continue
 
-    # Skip empty input
     if not user_input:
         print("Chatbot: Please enter a valid city or place name.\n")
         continue
 
     try:
-        # 🔹 Call Gemini
         response = model.generate_content(
             f"Give hotel cost details for {user_input}"
         )
 
-        # 🔹 Clean response (remove markdown code blocks if present)
         response_text = response.text.strip()
         if response_text.startswith("```json"):
             response_text = response_text.replace("```json", "").replace("```", "").strip()
         elif response_text.startswith("```"):
             response_text = response_text.replace("```", "").strip()
 
-        # 🔹 Parse JSON safely
         data = json.loads(response_text)
         hotel_cost_per_day = data["hotel_cost_per_day"]
 
